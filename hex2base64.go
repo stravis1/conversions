@@ -5,7 +5,8 @@ import h16 "encoding/hex"
 import "fmt"
 
 func main() {
-
+	// using this inline assignment for now to test the conversion
+	// will replace with a parameter to read a file
 	data := "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
 
 	var base64enc = map[string]string{"000000": "A", "000001": "B", "000010": "C",
@@ -47,12 +48,11 @@ func main() {
 			binBase64 = binBase64 + string(hexbinstr[x])
 
 		}
-		fmt.Println(binBase64, " ", base64enc[binBase64])
+		// fmt.Println(binBase64, " ", base64enc[binBase64])
 
 		base64output = base64output + base64enc[binBase64]
-		binBase64 = ""
+		binBase64 = "" //need to clear binBase64 for next loop.
 
-		// fmt.Println(base64output)
 	}
 
 	fmt.Println("base64output = ", base64output)
