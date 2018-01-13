@@ -1,11 +1,11 @@
-package main
+package hex2base64
 
 import "fmt"
 
-func main() {
+func Hex2base64(hex string) string {
 	// using this inline assignment for now to test the conversion
 	// will replace with a parameter to read a file
-	data := "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
+	//data := "49276d206b696c6c696e6720796f757220627261696e206c696b65206120706f69736f6e6f7573206d757368726f6f6d"
 
 	var base64enc = map[string]string{"000000": "A", "000001": "B", "000010": "C",
 		"000011": "D", "000100": "E", "000101": "F", "000110": "G", "000111": "H",
@@ -30,15 +30,19 @@ func main() {
 	// Create a binary string out of the hex data
 	var hexbinstr string
 
-	for i := 0; i < len(data); i++ {
-		hexbinstr = hexbinstr + hexDec[data[i]]
+	for i := 0; i < len(hex); i++ {
+		hexbinstr = hexbinstr + hexDec[hex[i]]
 	}
 
-	fmt.Println("Hex string = ", data)
+	fmt.Println("Hex string = ", hex)
 	fmt.Println("")
 
-	fmt.Println("Binary string = ", hexbinstr)
-	fmt.Println("Binary string length = ", len(hexbinstr))
+	// print output to see binary data
+	/*
+		fmt.Println("Binary string = ", hexbinstr)
+		fmt.Println("Binary string length = ", len(hexbinstr))
+	*/
+
 	var binBase64 string
 	var base64output string
 
@@ -71,5 +75,6 @@ func main() {
 	}
 
 	fmt.Println("base64output = ", base64output)
+	return (base64output)
 
 }
