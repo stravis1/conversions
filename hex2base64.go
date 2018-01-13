@@ -1,7 +1,5 @@
 package main
 
-import b64 "encoding/base64"
-import h16 "encoding/hex"
 import "fmt"
 
 func main() {
@@ -24,25 +22,42 @@ func main() {
 		"111010": "6", "111011": "7", "111100": "8", "111101": "9", "111110": "+",
 		"111111": "/"}
 
-	/*
-		var hexenc = "0123456789abcdef"
-	*/
 	var hexDec = map[byte]string{'0': "0000", '1': "0001", '2': "0010",
 		'3': "0011", '4': "0100", '5': "0101", '6': "0110", '7': "0111",
 		'8': "1000", '9': "1001", 'a': "1010", 'b': "1011", 'c': "1100",
 		'd': "1101", 'e': "1110", 'f': "1111"}
 
+	// Create a binary string out of the hex data
 	var hexbinstr string
 
 	for i := 0; i < len(data); i++ {
 		hexbinstr = hexbinstr + hexDec[data[i]]
 	}
 
-	fmt.Println(hexbinstr)
-	fmt.Println("hexbinstr length = ", len(hexbinstr))
+	fmt.Println("Hex string = ", data)
+	fmt.Println("")
+
+	fmt.Println("Binary string = ", hexbinstr)
+	fmt.Println("Binary string length = ", len(hexbinstr))
 	var binBase64 string
 	var base64output string
 
+	// if the data string converted to binary is not a multiple of 12 bits.
+	// pad the string with '0' to make it a multiple. This will result in the 'A'
+	// character being used instead of '='
+	if (len(hexbinstr) % 12) != 0 {
+		remainder := len(hexbinstr) % 12
+		if remainder == 4 {
+			hexbinstr = hexbinstr + "00000000"
+		} else if remainder == 8 {
+			hexbinstr = hexbinstr + "0000"
+		} else {
+			fmt.Println("Error found on length of input string.")
+		}
+	}
+
+	// cycle through the hexbinstring and encode 6 bits into base64
+	//
 	for i := 0; i < len(hexbinstr); i = i + 6 {
 		for x := i; x <= (i + 5); x++ {
 			binBase64 = binBase64 + string(hexbinstr[x])
@@ -56,21 +71,5 @@ func main() {
 	}
 
 	fmt.Println("base64output = ", base64output)
-
-	fmt.Println("Hex string to convert is:")
-	fmt.Println(data)
-	fmt.Println()
-
-	sDec, err := h16.DecodeString(data)
-
-	if err != nil {
-		fmt.Println("Err = %s", err)
-	}
-
-	fmt.Println("Decoded string is: %s", sDec)
-
-	sEnc := b64.StdEncoding.EncodeToString([]byte(sDec))
-	fmt.Println("base64 encoded string is:")
-	fmt.Println(sEnc)
 
 }
