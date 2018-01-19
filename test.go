@@ -3,6 +3,7 @@ package main
 import "fmt"
 import "conversions/convhex"
 
+/*
 var asciiEnc = map[string]string{"61": "a", "62": "b", "63": "c",
 	"64": "d", "65": "e", "66": "f", "67": "g", "68": "h", "69": "i",
 	"6a": "j", "6b": "k", "6c": "l", "6d": "m", "6e": "n", "6f": "o",
@@ -31,59 +32,63 @@ var charscore = map[string]int{"e": 13, "t": 9, "a": 8, "o": 8,
 	"i": 7, "n": 7, "s": 6, "h": 6, "r": 6, "d": 4, "l": 3, "c": 2,
 	"u": 1, "E": 13, "T": 9, "A": 8, "O": 8, "I": 7, "N": 7, "S": 6,
 	"H": 6, "R": 6, "D": 4, "L": 3, "C": 2, "U": 1, " ": 10}
-
+*/
 func main() {
 	//buf1 := "1c0111001f010100061a024b53535009181c"
 	//buf2 := "686974207468652062756c6c277320657965"
 	instr := "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736"
-	buf2 := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
+	//buf2 := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 "
 
-	var xortemp string
-	var xoresult string
-	var asciout string
-	var charsum int
+	//var xortemp string
+	//var xoresult string
+	//var asciout string
+	//var charsum int
 	score := make(map[string]int)
+	/*
+		// taking each char in buf2 xor with all hex chars in instr
+		for x := 0; x < len(buf2); x++ {
+			// two hex char in each char.
+			for i := 0; i < len(instr); i = i + 2 {
+				xortemp = xortemp + convhex.Xor(string(instr[i:(i+2)]), string(asciiDec[(string(buf2[x]))]))
+			}
+			xoresult = xortemp
+			xortemp = ""
+			// fmt.Println("xor = ", xoresult)
 
-	// taking each char in buf2 xor with all hex chars in instr
-	for x := 0; x < len(buf2); x++ {
-		// two hex char in each char.
-		for i := 0; i < len(instr); i = i + 2 {
-			xortemp = xortemp + convhex.Xor(string(instr[i:(i+2)]), string(asciiDec[(string(buf2[x]))]))
+			var tempchar string
+
+			//convert hex string back to ascii for output
+			for y := 0; y < len(xoresult); y = y + 2 {
+				tempchar = asciiEnc[string(xoresult[y:(y+2)])]
+				asciout = asciout + tempchar
+				charsum = charsum + charscore[tempchar]
+				//fmt.Println(xoresult[x:(x + 2)])
+				//fmt.Println(asciout)
+				// create a map of scores
+				/*_, ok := score[tempchar]
+				if ok {
+					score[tempchar] = score[tempchar] + 1
+				} else {
+					score[tempchar] = 1
+				}
+
+				// find the score
+
+			}  */
+	score = convhex.Xorstring(instr)
+	/*
+			charsum = 0 // reset charsum for next string
+			// Print key and output.
+			fmt.Println("key = ", (string(buf2[x])))
+			fmt.Println("hex out = ", asciout)
+			fmt.Println("score = ", score[asciout])
+			fmt.Println("")
+			asciout = ""
+
 		}
-		xoresult = xortemp
-		xortemp = ""
-		// fmt.Println("xor = ", xoresult)
+	*/
 
-		var tempchar string
-
-		//convert hex string back to ascii for output
-		for y := 0; y < len(xoresult); y = y + 2 {
-			tempchar = asciiEnc[string(xoresult[y:(y+2)])]
-			asciout = asciout + tempchar
-			charsum = charsum + charscore[tempchar]
-			//fmt.Println(xoresult[x:(x + 2)])
-			//fmt.Println(asciout)
-			// create a map of scores
-			/*_, ok := score[tempchar]
-			if ok {
-				score[tempchar] = score[tempchar] + 1
-			} else {
-				score[tempchar] = 1
-			} */
-
-			// find the score
-
-		}
-		score[asciout] = charsum
-		charsum = 0 // reset charsum for next string
-		// Print key and output.
-		fmt.Println("key = ", (string(buf2[x])))
-		fmt.Println("hex out = ", asciout)
-		fmt.Println("score = ", score[asciout])
-		fmt.Println("")
-		asciout = ""
-
-	}
+	// find high score
 	highscore := 0
 	possdecode := make(map[string]int)
 
