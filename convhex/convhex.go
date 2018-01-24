@@ -4,6 +4,14 @@ import (
 	"fmt"
 )
 
+type DecStrKey struct {
+	Instr, Decodedstr string
+}
+type DecStr struct {
+	Count int
+	Key   string
+}
+
 func Hex2base64(hex string) string {
 
 	fmt.Println("Hex string = ", hex)
@@ -153,7 +161,7 @@ func Xor(buf1 string, buf2 string) string {
 
 }
 
-func Xorstring(instr string) map[string]int {
+func Xorstring(instr string) map[DecStrKey]DecStr {
 
 	var asciiEnc = map[string]string{"61": "a", "62": "b", "63": "c",
 		"64": "d", "65": "e", "66": "f", "67": "g", "68": "h", "69": "i",
@@ -189,8 +197,11 @@ func Xorstring(instr string) map[string]int {
 	var xortemp string
 	var xoresult string
 	var asciout string
+	var tempchar string
 	var charsum int
-	score := make(map[string]int)
+	//var score DecStr
+	result := make(map[DecStrKey]DecStr)
+	var tempcountkey DecStr
 
 	// taking each char in keychar xor with all hex chars in instr
 	for x := 0; x < len(keychar); x++ {
@@ -202,17 +213,22 @@ func Xorstring(instr string) map[string]int {
 		xortemp = ""
 		// fmt.Println("xor = ", xoresult)
 
-		var tempchar string
-
 		//convert hex string back to ascii for output
 		for y := 0; y < len(xoresult); y = y + 2 {
 			tempchar = asciiEnc[string(xoresult[y:(y+2)])]
 			asciout = asciout + tempchar
 			charsum = charsum + charscore[tempchar]
 		}
-		score[asciout] = charsum
+		tempcountkey.Count = charsum
+		tempcountkey.Key = string(keychar[x])
+		result[DecStrKey{instr, asciout}] = tempcountkey
+
 		charsum = 0
 		asciout = ""
+		tempchar = ""
+		tempcountkey.Count = 0
+		tempcountkey.Key = ""
+
 	}
-	return (score)
+	return (result)
 }
