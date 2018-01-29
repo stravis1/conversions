@@ -1,7 +1,9 @@
 package convhex
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 )
 
 type DecStrKey struct {
@@ -231,4 +233,113 @@ func Xorstring(instr string) map[DecStrKey]DecStr {
 
 	}
 	return (result)
+}
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
+
+func Xormultstr(infile string) map[DecStrKey]DecStr {
+	inarray := make([]string, 60)
+	var instr string
+	// Open File to read strings
+	file, err := os.Open(infile)
+	check(err)
+
+	scanner := bufio.NewScanner(file)
+
+	scanner.Split(bufio.ScanLines)
+
+	var success bool
+	success = true
+
+	for success != false {
+		success = scanner.Scan()
+		err = scanner.Err()
+		if success == true {
+			if err == nil {
+				inarray = append(inarray, scanner.Text())
+			} else {
+				fmt.Println("ERR #1 reading file")
+			}
+
+		} else {
+			if err == nil {
+				fmt.Println("EOF reached")
+			}
+		}
+	}
+
+	result := make(map[DecStrKey]DecStr)
+	oneresult := make(map[DecStrKey]DecStr)
+
+	for i := 0; i < len(inarray); i++ {
+		instr = inarray[i]
+		oneresult = Xorstring(instr)
+		for k, v := range oneresult {
+			result[k] = v
+		}
+	}
+	return (result)
+}
+
+/*  Findhighscore finds the highest scores for a decoded string. It takes a map
+of DecStrKey:DecStr as input and returns a similar map of decoded strings, one
+of which is the highest score.
+*/
+func Findhighscore(inputstruct map[DecStrKey]DecStr, ncount int) map[DecStrKey]DecStr {
+	strscore := make(map[DecStrKey]DecStr)
+	var tempcountkey DecStr
+	highscore := 0
+	lowscore := DecStrKey{}
+
+	for key, value := range inputstruct {
+		if value.Count > highscore {
+			if len(strscore) >= ncount {
+				delete(strscore, lowscore)
+			}
+			// add the new high count to the strscore map
+			highscore = value.Count
+			tempcountkey.Count = value.Count
+			tempcountkey.Key = value.Key
+			strscore[key] = tempcountkey
+			// reassign the new Lowscore key
+			lowscore = findlowscore(strscore)
+
+		} else { //Else if the count was NOT greater than High score - check lowscore
+			if value.Count > strscore[lowscore].Count {
+				// add new item if its larger than lowscore
+				tempcountkey.Count = value.Count
+				tempcountkey.Key = value.Key
+				strscore[key] = tempcountkey
+				// check to see if the length is longer than desired.
+				if len(strscore) >= ncount {
+					fmt.Println("length of strscore ", len(strscore), " = to ncount ", ncount)
+					delete(strscore, lowscore)
+					lowscore = findlowscore(strscore)
+				}
+			}
+		}
+
+		tempcountkey.Count = 0
+		tempcountkey.Key = ""
+	}
+	return (strscore)
+}
+
+/* finds the lowscore in the map structure and returns a key to the map */
+func findlowscore(inputstruct map[DecStrKey]DecStr) DecStrKey {
+	lowest := 9999
+	lowestKey := DecStrKey{}
+
+	for key, value := range inputstruct {
+		if value.Count < lowest {
+			lowestKey = key
+			lowest = value.Count
+		}
+
+	}
+	return (lowestKey)
 }
